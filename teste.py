@@ -2,6 +2,7 @@ import random
 import pygame
 import os
 import pygame.mixer
+import time
 
 pygame.font.init()
 pygame.mixer.init()
@@ -11,10 +12,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("LABIRINTO")
 
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
-BLUE = (0, 0, 255)
+
 SIZE = 60
 FPS = 60
 BG = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'piso.jpg')), (WIDTH, HEIGHT))
@@ -22,6 +20,7 @@ BG2 = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'ratoqueij
 BG3 = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'ratosad.png')), (WIDTH, HEIGHT))
 LOGO = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'logo.png')), (518, 150))
 PRESS_SPACE = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'press_space.png')), (212, 50))
+PRESS_SPACE2 = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'press_space2.png')), (212, 50))
 ACHOU = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'achou.png')), (356, 150))
 NAO_ACHOU = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'sem_caminho.png')), (468, 75))
 Rato = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'rato.png')), (SIZE, SIZE))
@@ -41,6 +40,11 @@ QISSO_SOUND = pygame.mixer.Sound(os.path.join('Assets/queisso.mp3'))
 RAPAZ_SOUND = pygame.mixer.Sound(os.path.join('Assets/Rapaz.mp3'))
 SUSPENSE_SOUND = pygame.mixer.Sound(os.path.join('Assets/Suspense.mp3'))
 
+retangulo_sprite = PRESS_SPACE.get_rect()
+# intervalo_piscar = 0.5
+# piscar = True  # Variável para controlar o estado do sprite
+#
+# tempo_anterior = time.time()
 WIN.blit(BG, (0, 0))
 
 TAMANHO = 10
@@ -49,16 +53,17 @@ CAMINHO = '.'
 SEM_SAIDA = 'X'
 VAZIO = ' '
 INICIO = 'I'
-tabuleiro = [[],
-             [],
-             [],
-             [],
-             [],
-             [],
-             [],
-             [],
-             [],
-             []]
+
+TEXT_INTRO = pygame.font.SysFont('comicsans', 15)
+
+resumo = 'Por meio de uma I.A o ratinho terá que encontrar seu queijo num labirinto cheio de armadilhas!'
+
+
+def draw_intro(text):
+    draw_text = TEXT_INTRO.render(text.upper(), True, WHITE)
+    WIN.blit(draw_text, (WIDTH / 2 - draw_text.get_width() / 2, HEIGHT - 200))
+    pygame.display.update()
+    pygame.time.delay(2000)
 
 
 def inicializar_matriz(matriz, TAMANHO):
@@ -116,7 +121,6 @@ def posicao_vazia(linha, coluna):
 
 
 def tentar_caminho(prox_linha, prox_coluna):
-    # print("tentar_caminho")
     achou = False
     pygame.display.update()
     if tabuleiro[prox_linha][prox_coluna] == DESTINO:
@@ -125,7 +129,6 @@ def tentar_caminho(prox_linha, prox_coluna):
         WIN.blit(BG2, (0, 0))
         pygame.display.update()
     elif posicao_vazia(prox_linha, prox_coluna):
-        # print("tentar_caminho ||")
         tabuleiro[prox_linha][prox_coluna] = CAMINHO
         WIN.blit(Pegada, (prox_linha * SIZE, prox_coluna * SIZE))
         PASSOS_SOUND.play()
@@ -171,61 +174,29 @@ def procurar_caminho(linha_atual, coluna_atual):
     return achou
 
 
-# tabuleiro = inicializar_matriz(tabuleiro, TAMANHO)
-# linha_inicio = gerar_numero(1, 8)
-# coluna_inicio = gerar_numero(1, 8)
-# linha_destino = gerar_numero(1, 8)
-# coluna_destino = gerar_numero(1, 8)
-#
-# tabuleiro[linha_inicio][coluna_inicio] = INICIO
-#
-# tabuleiro[linha_destino][coluna_destino] = DESTINO
-# imprimir(tabuleiro)
-
-
-# def draw_window():
-#     WIN.blit(BG, (0, 0))
-#     for i in range(0, 10):
-#         for j in range(0, 10):
-#             if tabuleiro[i][j] == '#':
-#                 WIN.blit(Armadilha, (i * SIZE, j * SIZE))
-#                 pygame.display.update()
-#             elif tabuleiro[i][j] == 'I':
-#                 WIN.blit(Rato, (i * SIZE, j * SIZE))
-#             elif tabuleiro[i][j] == 'D':
-#                 WIN.blit(Queijo, (i * SIZE, j * SIZE))
-#     pygame.display.update()
-
-
-# BG_SOUND.play()
-# achou = procurar_caminho(linha_inicio, coluna_inicio)
-#
-# if achou:
-#     print("achou caminho!")
-#     pygame.display.update()
-#     WIN.blit(BG2, (0, 0))
-#     pygame.display.update()
-#     BG_SOUND.stop()
-#     WINS_SOUND.play()
-# else:
-#     print("nao tem caminho!")
-#     pygame.display.update()
-#     WIN.blit(BG3, (0, 0))
-#     pygame.display.update()
-#     BG_SOUND.stop()
-#     FAIL_SOUND.play()
-
 def main():
+    intervalo_piscar = 0.5
+    piscar = True  # Variável para controlar o estado do sprite
+
+    tempo_anterior = time.time()
     global tabuleiro
     clock = pygame.time.Clock()
     run = True
     WIN.blit(BG, (0, 0))
-    WIN.blit(LOGO, (WIDTH/2 - 259, HEIGHT/3 - 75))
-    WIN.blit(PRESS_SPACE, (WIDTH/2 - 106, HEIGHT/2 - 25))
-
+    WIN.blit(LOGO, (WIDTH / 2 - 259, HEIGHT / 3 - 75))
+    # WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+    draw_intro(resumo)
     INTRO_SOUND.play()
     while run:
         clock.tick(FPS)
+        tempo_atual = time.time()
+        if tempo_atual - tempo_anterior >= intervalo_piscar:
+            piscar = not piscar
+            tempo_anterior = tempo_atual
+        if piscar:
+            WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+        else:
+            WIN.blit(PRESS_SPACE2, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -233,6 +204,7 @@ def main():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     INTRO_SOUND.stop()
+                    tabuleiro = [[], [], [], [], [], [], [], [], [], []]
                     tabuleiro = inicializar_matriz(tabuleiro, TAMANHO)
                     linha_inicio = gerar_numero(1, 8)
                     coluna_inicio = gerar_numero(1, 8)
@@ -248,8 +220,6 @@ def main():
 
                     if achou:
                         print("achou caminho!")
-                        # pygame.time.delay(1000)
-                        # pygame.display.update()
                         WIN.blit(BG2, (0, 0))
                         WIN.blit(ACHOU, (WIDTH / 2 - 356 / 2, HEIGHT - 250))
                         pygame.display.update()
@@ -270,11 +240,9 @@ def main():
                         pygame.time.delay(3000)
                         WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
                         break
-
         pygame.display.update()
     main()
 
 
 if __name__ == "__main__":
     main()
-#commit
