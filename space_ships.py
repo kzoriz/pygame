@@ -20,7 +20,7 @@ BORDER = pygame.Rect(WIDTH/2 - 2.5, 0, 5, HEIGHT)
 
 BG_SOUND = pygame.mixer.Sound(os.path.join('Assets/gta.mp3'))
 BULLET_HIT_SOUND = pygame.mixer.Sound(os.path.join('Assets', 'Grenade+1.mp3'))
-BULLET_FIRE_SOUND = pygame.mixer.Sound(os.path.join('Assets', 'Gun+silencer.mp3'))
+BULLET_FIRE_SOUND = pygame.mixer.Sound(os.path.join('Assets', 'Gun+Silencer.mp3'))
 
 LIFE_FONT = pygame.font.SysFont('comicsans', 25)
 WINNER_FONT = pygame.font.SysFont('comicsans', 100)
