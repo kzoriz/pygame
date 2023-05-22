@@ -40,11 +40,8 @@ QISSO_SOUND = pygame.mixer.Sound(os.path.join('Assets/queisso.mp3'))
 RAPAZ_SOUND = pygame.mixer.Sound(os.path.join('Assets/Rapaz.mp3'))
 SUSPENSE_SOUND = pygame.mixer.Sound(os.path.join('Assets/Suspense.mp3'))
 
-retangulo_sprite = PRESS_SPACE.get_rect()
-# intervalo_piscar = 0.5
-# piscar = True  # Variável para controlar o estado do sprite
-#
-# tempo_anterior = time.time()
+# retangulo_sprite = PRESS_SPACE.get_rect()
+
 WIN.blit(BG, (0, 0))
 
 TAMANHO = 10
@@ -53,9 +50,7 @@ CAMINHO = '.'
 SEM_SAIDA = 'X'
 VAZIO = ' '
 INICIO = 'I'
-
 TEXT_INTRO = pygame.font.SysFont('comicsans', 15)
-
 resumo = 'Por meio de uma I.A o ratinho terá que encontrar seu queijo num labirinto cheio de armadilhas!'
 
 
@@ -63,7 +58,6 @@ def draw_intro(text):
     draw_text = TEXT_INTRO.render(text.upper(), True, WHITE)
     WIN.blit(draw_text, (WIDTH / 2 - draw_text.get_width() / 2, HEIGHT - 200))
     pygame.display.update()
-    pygame.time.delay(2000)
 
 
 def inicializar_matriz(matriz, TAMANHO):
@@ -128,6 +122,7 @@ def tentar_caminho(prox_linha, prox_coluna):
         achou = True
         WIN.blit(BG2, (0, 0))
         pygame.display.update()
+        pygame.time.delay(500)
     elif posicao_vazia(prox_linha, prox_coluna):
         tabuleiro[prox_linha][prox_coluna] = CAMINHO
         WIN.blit(Pegada, (prox_linha * SIZE, prox_coluna * SIZE))
@@ -176,19 +171,19 @@ def procurar_caminho(linha_atual, coluna_atual):
 
 def main():
     intervalo_piscar = 0.5
-    piscar = True  # Variável para controlar o estado do sprite
-
+    piscar = True
     tempo_anterior = time.time()
     global tabuleiro
     clock = pygame.time.Clock()
-    run = True
+
     WIN.blit(BG, (0, 0))
     WIN.blit(LOGO, (WIDTH / 2 - 259, HEIGHT / 3 - 75))
-    # WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
-    draw_intro(resumo)
     INTRO_SOUND.play()
+    run = True
     while run:
         clock.tick(FPS)
+        WIN.blit(BG, (0, 0))
+        WIN.blit(LOGO, (WIDTH / 2 - 259, HEIGHT / 3 - 75))
         tempo_atual = time.time()
         if tempo_atual - tempo_anterior >= intervalo_piscar:
             piscar = not piscar
@@ -196,7 +191,9 @@ def main():
         if piscar:
             WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
         else:
-            WIN.blit(PRESS_SPACE2, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+            pass
+            # WIN.blit(PRESS_SPACE2, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+        draw_intro(resumo)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -225,8 +222,8 @@ def main():
                         pygame.display.update()
                         BG_SOUND.stop()
                         WINS_SOUND.play()
-                        pygame.time.delay(3000)
-                        WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+                        pygame.time.delay(5000)
+                        # WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
                         break
                     else:
                         print("nao tem caminho!")
@@ -237,8 +234,8 @@ def main():
                         pygame.display.update()
                         BG_SOUND.stop()
                         FAIL_SOUND.play()
-                        pygame.time.delay(3000)
-                        WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
+                        pygame.time.delay(5000)
+                        # WIN.blit(PRESS_SPACE, (WIDTH / 2 - 106, HEIGHT / 2 - 25))
                         break
         pygame.display.update()
     main()
